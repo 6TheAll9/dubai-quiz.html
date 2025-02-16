@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dubai Quiz Game</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    text-align: center;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f9;
+  }
+  #quiz-container {
+    max-width: 600px;
+    margin: 50px auto;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    background-color: #ffffff;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+  h1 {
+    color: #333333;
+  }
+  .question {
+    font-size: 18px;
+    margin-bottom: 20px;
+    color: #555555;
+  }
+  .choices button {
+    margin: 5px;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    border: none;
+    border-radius: 5px;
+    background-color: #007bff;
+    color: white;
+    transition: background-color 0.3s ease;
+  }
+  .choices button:hover {
+    background-color: #0056b3;
+  }
+  .result {
+    margin-top: 20px;
+    font-size: 18px;
+    color: #28a745;
+  }
+  .result.wrong {
+    color: #dc3545;
+  }
+  #nextBtn {
+    margin-top: 20px;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    border: none;
+    border-radius: 5px;
+    background-color: #28a745;
+    color: white;
+    transition: background-color 0.3s ease;
+  }
+  #nextBtn:hover {
+    background-color: #218838;
+  }
+  .hidden {
+    display: none;
+  }
+</style>
+</head>
+<body>
+
+<div id="quiz-container">
+  <h1>Dubai Quiz Game</h1>
+  <div class="question" id="question">Question will appear here</div>
+  <div class="choices" id="choices"></div>
+  <div class="result" id="result"></div>
+  <button onclick="nextQuestion()" id="nextBtn" class="hidden">Next Question</button>
+</div>
+
+<script>
+let currentQuestionIndex = 0;
+let score = 0;
+const questions = [
+  {
+    question: "What is the tallest building in the world located in Dubai?",
+    choices: ["Burj Al Arab", "Burj Khalifa", "Dubai Frame", "The Palm Jumeirah"],
+    answer: "Burj Khalifa"
+  },
+  {
+    question: "Which famous shopping mall in Dubai houses an indoor ski resort?",
+    choices: ["Mall of the Emirates", "Dubai Mall", "Ibn Battuta Mall", "Deira City Centre"],
+    answer: "Mall of the Emirates"
+  },
+  {
+    question: "Dubai is known for its artificial islands. What is the name of the largest one?",
+    choices: ["The World", "Palm Jumeirah", "Palm Deira", "Dubai Islands"],
+    answer: "Palm Jumeirah"
+  },
+  {
+    question: "Which airline is based in Dubai and operates flights worldwide?",
+    choices: ["Emirates Airlines", "Etihad Airways", "Qatar Airways", "FlyDubai"],
+    answer: "Emirates Airlines"
+  },
+  {
+    question: "What is the currency used in Dubai?",
+    choices: ["Euro (€)", "US Dollar ($)", "Dirham (AED)", "Pound (£)"],
+    answer: "Dirham (AED)"
+  }
+];
+
+function loadQuestion() {
+  if (currentQuestionIndex >= questions.length) {
+    showFinalScore();
+    return;
+  }
+  const questionElement = document.getElementById('question');
+  const choicesElement = document.getElementById('choices');
+  const resultElement = document.getElementById('result');
+  const nextBtn = document.getElementById('nextBtn');
+
+  questionElement.textContent = questions[currentQuestionIndex].question;
+  choicesElement.innerHTML = ''; // Clear previous choices
+  resultElement.textContent = '';
+  nextBtn.classList.add('hidden');
+
+  // Generate buttons for each choice
+  questions[currentQuestionIndex].choices.forEach(choice => {
+    const button = document.createElement('button');
+    button.textContent = choice;
+    button.onclick = () => checkAnswer(choice);
+    choicesElement.appendChild(button);
+  });
+}
+
+function checkAnswer(userAnswer) {
+  const resultElement = document.getElementById('result');
+  const correctAnswer = questions[currentQuestionIndex].answer;
+  if (userAnswer === correctAnswer) {
+    resultElement.textContent = 'Correct!';
+    resultElement.classList.remove('wrong');
+    score++;
+  } else {
+    resultElement.textContent = `Wrong! The correct answer is "${correctAnswer}".`;
+    resultElement.classList.add('wrong');
+  }
+  disableButtons();
+  document.getElementById('nextBtn').classList.remove('hidden');
+}
+
+function disableButtons() {
+  const buttons = document.querySelectorAll('.choices button');
+  buttons.forEach(button => button.disabled = true);
+}
+
+function nextQuestion() {
+  currentQuestionIndex++;
+  enableButtons();
+  loadQuestion();
+}
+
+function enableButtons() {
+  const buttons = document.querySelectorAll('.choices button');
+  buttons.forEach(button => button.disabled = false);
+}
+
+function showFinalScore() {
+  const quizContainer = document.getElementById('quiz-container');
+  const finalScore = `Your final score is ${score} out of ${questions.length}.`;
+  quizContainer.innerHTML = `<h1>Quiz Completed!</h1><p>${finalScore}</p>`;
+}
+
+loadQuestion();
+</script>
+
+</body>
+</html>
